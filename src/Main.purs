@@ -5,8 +5,9 @@ import Data.List
 import Data.Maybe
 import Data.Tuple
 import Test.QuickCheck
+import Test.QuickCheck.Gen
+import Test.QuickCheck.Arbitrary
 
--- Main.runLengthEnc $ 1:1:1:2:2:3:Nil
 runLengthEnc :: forall a. (Eq a) => List a -> List (Tuple Int a)
 runLengthEnc as =
   case head as of
@@ -15,14 +16,18 @@ runLengthEnc as =
       in Cons (Tuple (length s.init) a) (runLengthEnc s.rest)
     _ -> Nil
 
--- Main.runLengthDec $ (Tuple 10 2):Nil
 runLengthDec :: forall a. List (Tuple Int a) -> List a
 runLengthDec = concatMap (uncurry replicate)
 
-prop :: Number -> Number -> Result
-prop x y =
-  let result = x * x + y * y >= x * x
-  in result <?> "x: " ++ show x ++ "; y: " ++ show y
+genOutput :: Gen (List (Tuple Int Char))
+-- TODO: just getting the outline of this working - need to implement this properly...
+genOutput = return $ (Tuple 5 'a'):Nil
+
+instance arbOutput :: Arbitrary (List (Tuple Int Char)) where
+  arbitrary = genOutput
+
+p :: List (Tuple Int Char) -> Boolean
+p r = runLengthEnc(runLengthDec(r)) == r
 
 main = do
-  quickCheck prop
+  quickCheck p
