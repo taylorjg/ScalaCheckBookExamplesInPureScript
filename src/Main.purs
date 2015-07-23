@@ -28,7 +28,7 @@ genOutput =
     rleItem :: Gen (Tuple Int Char)
     rleItem = do
       n <- chooseInt 1 20
-      c <- genAlphaLowerChar
+      c <- genAlphaNumChar
       return $ Tuple n c
     rleList :: Int -> Gen (List (Tuple Int Char))
     rleList size =
