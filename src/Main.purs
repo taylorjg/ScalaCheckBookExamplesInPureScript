@@ -4,7 +4,6 @@ import Prelude
 import Data.List
 import Data.Maybe
 import Data.Tuple
-import Data.Char
 import Test.QuickCheck
 import Test.QuickCheck.Gen
 import Test.QuickCheck.Arbitrary
@@ -29,7 +28,7 @@ genOutput =
     rleItem = do
       n <- chooseInt 1 20
       c <- genAlphaNumChar
-      return $ Tuple n c
+      return (Tuple n c)
     rleList :: Int -> Gen (List (Tuple Int Char))
     rleList size =
       if size <= 1 then do
