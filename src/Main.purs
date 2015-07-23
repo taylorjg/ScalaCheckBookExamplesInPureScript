@@ -8,30 +8,18 @@ import Data.Char
 import Test.QuickCheck
 import Test.QuickCheck.Gen
 import Test.QuickCheck.Arbitrary
+import ScalaCheckBits
 
 runLengthEnc :: forall a. (Eq a) => List a -> List (Tuple Int a)
 runLengthEnc as =
   case head as of
     Just a ->
       let s = span (==a) as
-      in Cons (Tuple (length s.init) a) (runLengthEnc s.rest)
+      in Tuple (length s.init) a:(runLengthEnc s.rest)
     _ -> Nil
 
 runLengthDec :: forall a. List (Tuple Int a) -> List a
 runLengthDec = concatMap (uncurry replicate)
-
-suchThat :: forall a. Gen a -> (a -> Boolean) -> Gen a
-suchThat gen p = do
-  x <- gen
-  if p x then return x else (suchThat gen p)
-
-genCharInRange :: Char -> Char -> Gen Char
-genCharInRange l h = do
-  n <- chooseInt (toCharCode l) (toCharCode h)
-  return $ fromCharCode n
-
-genAlphaLowerChar :: Gen Char
-genAlphaLowerChar = genCharInRange 'a' 'z'
 
 genOutput :: Gen (List (Tuple Int Char))
 genOutput =
